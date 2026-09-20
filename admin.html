@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>와이티학원 관리자</title>
 <meta name="description" content="업무일지 · 결석/보충 · 상담 · 시급관리 | 관리자 전용">
 <meta property="og:type" content="website">
@@ -19,24 +19,59 @@
 <meta name="twitter:image" content="https://ytschool7100-afk.github.io/yt-worklog-share/og-admin.png">
 <link rel="icon" href="https://ytschool7100-afk.github.io/yt-worklog-share/yt-logo.png">
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,'Noto Sans KR',sans-serif;background:#f3f7fa;color:#16384f}
-.wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
-.card{width:min(520px,100%);background:#fff;border-radius:24px;padding:30px;box-shadow:0 20px 55px rgba(20,55,80,.16);text-align:center}
-.logo{width:170px;max-height:90px;object-fit:contain;margin:0 auto 20px}
-h1{font-size:26px;margin:0 0 10px}p{font-size:14px;color:#607483;line-height:1.7;margin:0 0 22px}
-a{display:block;background:#12374f;color:#fff;text-decoration:none;padding:14px 16px;border-radius:12px;font-weight:800}
-.small{font-size:12px;color:#8898a3;margin-top:12px}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR","Segoe UI",sans-serif;background:#f3f7fa;color:#17364d}
+.wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:22px}
+.card{width:min(520px,100%);background:#fff;border-radius:24px;padding:28px;box-shadow:0 18px 55px rgba(18,55,79,.17);text-align:center}
+.logo{width:160px;max-height:82px;object-fit:contain;margin:0 auto 17px}
+h1{font-size:25px;margin:0 0 8px}p{font-size:14px;color:#667985;line-height:1.65;margin:0 0 18px}
+.btn{display:block;width:100%;border:0;background:#123b57;color:#fff;text-decoration:none;padding:14px 16px;border-radius:12px;font-size:16px;font-weight:900;cursor:pointer}
+.copy{margin-top:9px;background:#eaf1f5;color:#24475e}
+.notice{display:none;text-align:left;margin-top:17px;padding:14px;border:1px solid #efd39c;background:#fff8e8;border-radius:13px;color:#725416;font-size:13px;line-height:1.65}
+.notice b{color:#48330c}
+.small{font-size:11px;color:#8b9aa4;margin-top:12px;line-height:1.5}
 </style>
-<meta http-equiv="refresh" content="0;url=https://script.google.com/macros/s/AKfycbxA7i0zQVLv5KojkinMEOT_p8IVktXwD9OJqnDscEeEJCJnLBCT46b3FZCDiqhY55ZV/exec">
-<script>location.replace('https://script.google.com/macros/s/AKfycbxA7i0zQVLv5KojkinMEOT_p8IVktXwD9OJqnDscEeEJCJnLBCT46b3FZCDiqhY55ZV/exec');</script>
 </head>
 <body>
 <div class="wrap"><div class="card">
 <img class="logo" src="https://ytschool7100-afk.github.io/yt-worklog-share/yt-logo.png" alt="YT학원 로고">
 <h1>와이티학원 관리자</h1>
 <p>업무일지 · 결석/보충 · 상담 · 시급관리 | 관리자 전용</p>
-<a href="https://script.google.com/macros/s/AKfycbxA7i0zQVLv5KojkinMEOT_p8IVktXwD9OJqnDscEeEJCJnLBCT46b3FZCDiqhY55ZV/exec">관리자 바로가기</a>
-<div class="small">잠시 후 자동으로 이동합니다.</div>
+<a class="btn" id="openBtn" href="https://script.google.com/macros/s/AKfycbxA7i0zQVLv5KojkinMEOT_p8IVktXwD9OJqnDscEeEJCJnLBCT46b3FZCDiqhY55ZV/exec">관리자 페이지 열기</a>
+<button class="btn copy" id="copyBtn" type="button">직접 주소 복사</button>
+
+<div class="notice" id="kakaoNotice">
+<b>카카오톡 안에서는 Google Apps Script 화면이 빈 화면으로 보일 수 있습니다.</b><br><br>
+아이폰: 아래쪽 <b>공유 버튼(□↑)</b> → <b>Safari에서 열기</b><br>
+안드로이드: 오른쪽 위 <b>⋮</b> → <b>다른 브라우저/Chrome으로 열기</b><br><br>
+외부 브라우저에서 열면 Google 계정 로그인 없이 사용할 수 있습니다.
+</div>
+
+<div class="small" id="status">브라우저를 확인하고 있습니다.</div>
 </div></div>
+<script>
+const TARGET='https://script.google.com/macros/s/AKfycbxA7i0zQVLv5KojkinMEOT_p8IVktXwD9OJqnDscEeEJCJnLBCT46b3FZCDiqhY55ZV/exec';
+const ua=navigator.userAgent||'';
+const inKakao=/KAKAOTALK|DaumApps/i.test(ua);
+
+function copyTarget(){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(TARGET).then(()=>alert('주소를 복사했습니다. Safari/Chrome 주소창에 붙여넣어 주세요.'));
+  } else {
+    const t=document.createElement('textarea');t.value=TARGET;document.body.appendChild(t);t.select();
+    document.execCommand('copy');t.remove();
+    alert('주소를 복사했습니다. Safari/Chrome 주소창에 붙여넣어 주세요.');
+  }
+}
+document.getElementById('copyBtn').onclick=copyTarget;
+
+if(inKakao){
+  document.getElementById('kakaoNotice').style.display='block';
+  document.getElementById('status').textContent='카카오톡 내부 브라우저입니다. 외부 브라우저로 열어 주세요.';
+} else {
+  document.getElementById('status').textContent='잠시 후 자동으로 이동합니다.';
+  setTimeout(()=>location.replace(TARGET),350);
+}
+</script>
 </body>
 </html>
